@@ -7,6 +7,10 @@ defmodule InsigniaNotifyJobWeb.Router do
 
   scope "/api", InsigniaNotifyJobWeb do
     pipe_through :api
+
+    get "/games", GamesController, :get_games_api
+    get "/stats", GamesController, :get_stats_api
+    get "/game_match", GamesController, :get_game_match_api
   end
 
   # Enable LiveDashboard in development

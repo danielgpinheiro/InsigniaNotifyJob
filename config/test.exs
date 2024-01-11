@@ -9,7 +9,7 @@ config :insignia_notify_job, InsigniaNotifyJob.Repo,
   username: "postgres",
   password: "postgres",
   hostname: "localhost",
-  database: "insignia_notify_job_test#{System.get_env("MIX_TEST_PARTITION")}",
+  database: "insignia_notify_app_test#{System.get_env("MIX_TEST_PARTITION")}",
   pool: Ecto.Adapters.SQL.Sandbox,
   pool_size: 10
 

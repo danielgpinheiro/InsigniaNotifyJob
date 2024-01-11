@@ -7,6 +7,11 @@
 # General application configuration
 import Config
 
+config :insignia_notify_job, :base_url, System.fetch_env("BASE_URL")
+config :insignia_notify_job, :games_table_rows_selector, System.fetch_env("TABLE_ROWS_SELECTOR")
+config :insignia_notify_job, :stats_selector, System.fetch_env("STATS_SELECTOR")
+config :insignia_notify_job, :interval_time, System.fetch_env("INTERVAL_TIME")
+
 config :insignia_notify_job,
   ecto_repos: [InsigniaNotifyJob.Repo]
 

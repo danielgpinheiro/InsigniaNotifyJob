@@ -7,6 +7,13 @@ defmodule InsigniaNotifyJob.Application do
 
   @impl true
   def start(_type, _args) do
+    credentials =
+      "GOOGLE_APPLICATION_CREDENTIALS"
+      |> System.fetch_env!()
+      |> Jason.decode!()
+
+    source = {:service_account, credentials}
+
     children = [
       # Start the Telemetry supervisor
       InsigniaNotifyJobWeb.Telemetry,
@@ -15,7 +22,14 @@ defmodule InsigniaNotifyJob.Application do
       # Start the PubSub system
       {Phoenix.PubSub, name: InsigniaNotifyJob.PubSub},
       # Start the Endpoint (http/https)
-      InsigniaNotifyJobWeb.Endpoint
+      InsigniaNotifyJobWeb.Endpoint,
+
+      # Insignia HTML Crawler Interval Job
+      {InsigniaNotifyJob.Interval, 0},
+
+      # Google Auth for Firebase FCM Send
+      {Goth, name: InsigniaNotifyJob.Goth, source: source}
+
       # Start a worker by calling: InsigniaNotifyJob.Worker.start_link(arg)
       # {InsigniaNotifyJob.Worker, arg}
     ]
