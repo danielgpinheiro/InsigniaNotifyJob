@@ -75,6 +75,21 @@ defmodule InsigniaNotifyJobWeb.GamesController do
     end
   end
 
+  def get_game_playlists(url) do
+    case Api.get(url) do
+      {:ok, body} ->
+        document = Floki.parse_document(body)
+
+        Find.find_game_playlists(
+          document,
+          "#playlist-accordion"
+        )
+
+      {:error, _} ->
+        {:error, :internal_server_error}
+    end
+  end
+
   def get_games_api(conn, _params) do
     games = get_games()
 
@@ -97,6 +112,14 @@ defmodule InsigniaNotifyJobWeb.GamesController do
     conn
     |> put_status(:ok)
     |> json(matches)
+  end
+
+  def get_game_playlists_api(conn, %{"url" => url} = _params) do
+    playlists = get_game_playlists(url)
+
+    conn
+    |> put_status(:ok)
+    |> json(playlists)
   end
 
   defp parse_document({:ok, body}) do

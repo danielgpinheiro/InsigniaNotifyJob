@@ -124,8 +124,8 @@ defmodule InsigniaNotifyJobWeb.NotificationController do
         IO.inspect(notification_body, label: "OK Push Notification")
         {:ok}
 
-      {:error, _} ->
-        IO.inspect(notification_body, label: "ERROR Push Notification")
+      {:error, reason} ->
+        IO.inspect(%{reason: reason, params: notification_body}, label: "ERROR Push Notification")
         {:ok}
     end
   end

@@ -11,6 +11,7 @@ defmodule InsigniaNotifyJobWeb.Router do
     get "/games", GamesController, :get_games_api
     get "/stats", GamesController, :get_stats_api
     get "/game_match", GamesController, :get_game_match_api
+    get "/game_playlists", GamesController, :get_game_playlists_api
   end
 
   # Enable LiveDashboard in development

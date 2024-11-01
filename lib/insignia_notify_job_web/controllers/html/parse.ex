@@ -20,12 +20,20 @@ defmodule InsigniaNotifyJobWeb.Html.Parse do
       |> Floki.attribute("src")
       |> Enum.at(0)
 
+    tds
+    |> Floki.find("td:nth-child(2)")
+    |> Floki.text()
+    |> String.replace("\n ", "")
+    |> String.replace(" ", "")
+    |> String.split("\n")
+
     {serial, code} =
       tds
       |> Floki.find("td:nth-child(2)")
       |> Floki.text()
-      |> String.split(" ")
-      |> Enum.map(fn text -> String.replace(text, "\n", "") end)
+      |> String.replace("\n ", "")
+      |> String.replace(" ", "")
+      |> String.split("\n")
       |> List.to_tuple()
 
     online_users =
@@ -33,11 +41,15 @@ defmodule InsigniaNotifyJobWeb.Html.Parse do
       |> Floki.find("td:nth-child(3)")
       |> Floki.text()
       |> String.replace("\n", "")
+      |> String.replace(" ", "")
 
     {active_users, active_sessions} =
       tds
       |> Floki.find("td:nth-child(4)")
       |> Floki.text()
+      |> String.replace("\n", "")
+      |> String.replace(" ", "")
+      |> String.replace("sessions", "")
       |> String.split("in")
       |> handle_active_users_content()
 
@@ -141,6 +153,20 @@ defmodule InsigniaNotifyJobWeb.Html.Parse do
     %{head: head, body: body}
   end
 
+  def parse_game_playlists(html) do
+    playslist =
+      html
+      |> Floki.find(".card-header")
+      |> Enum.map(fn playlist ->
+        [
+          playlist |> Floki.find("a") |> Floki.text() |> String.replace("\n", ""),
+          playlist |> Floki.find(".card-tools") |> Floki.text() |> String.replace("\n", "")
+        ]
+      end)
+
+    %{head: ["Name", "Players Count"], body: playslist}
+  end
+
   defp handle_active_users_content(list) when length(list) == 1 do
     active_users =
       list
@@ -155,15 +181,11 @@ defmodule InsigniaNotifyJobWeb.Html.Parse do
     active_users =
       list
       |> Enum.at(0)
-      |> String.replace("\n", "")
-      |> String.trim()
 
     active_sessions =
       list
       |> Enum.at(1)
-      |> String.split("\n")
-      |> Enum.at(0)
-      |> String.trim()
+      |> String.replace("session", "")
 
     {active_users, active_sessions}
   end
